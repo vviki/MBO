@@ -7,9 +7,9 @@
 
 ### Api application: 
 
-* To run rest api application local standard installation of Redis is required ([Linux](https://redis.io/topics/quickstart), [Windows](https://redis.io/topics/quickstart][https://github.com/ServiceStack/redis-windows)). 
+* To run rest api application local standard installation of Redis is required ([Linux](https://redis.io/topics/quickstart), [Windows](https://github.com/ServiceStack/redis-windows)). 
 * To run rest api application on Linux also Apache server needs to be installed and .net core framework needs to be configured to work with it ([howto](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-2.1)).
-* Application can be started by typing "dotnet MarvelBO.Api/output_directory/MarvelBO.Api.dll" (output_directory is the one created by "publish" method) inside main solution directory. This is how it is currently deployed and running on AWS ([Creators](http://ec2-52-15-204-100.us-east-2.compute.amazonaws.com/api/creators) or [Notes](http://ec2-52-15-204-100.us-east-2.compute.amazonaws.com/api/notes) can be used for verification). 
+* Application can be started by typing "dotnet MarvelBO.Api.dll" inside main_solution_directory/MarvelBO.Api/output_directory/ (output_directory is the one created by "publish" method). This is how it is currently deployed and running on AWS ([Creators](http://ec2-52-15-204-100.us-east-2.compute.amazonaws.com/api/creators) or [Notes](http://ec2-52-15-204-100.us-east-2.compute.amazonaws.com/api/notes) can be used for verification). 
 * To run rest api application on Windows, IIS Express shipped with Visual Studio can be used (by pressing F5 when solution is loaded) or it can be deployed to regular [ISS server](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.1). 
 * MarvelApi public key, private key and url need to be placed in MarvelClientSettings section of MarvelBO.Api/output_directory/appsettings.json file. There is also ImportLimit parameter used for limiting data import from  MarvelApi.
 * All requests and responses are in Json (two additional parameterless Get methods exist: /api/creators and /api/notes that do not have any request types). 
@@ -40,7 +40,7 @@
 * For serializing api requests [NewtonSoft.Json](https://www.newtonsoft.com/json) library is used.
 * List of commands and parameters can be seen by using -h or --Help option, that shows:
 
-```bash
+```
 Usage:
 Example:  -L -c=5 -i=">4000" -o=-note,comics,name,-date,-id -N -C -a=8764 -b=
 8571 -A -d=11122 -x="New Note!!!" -U -D

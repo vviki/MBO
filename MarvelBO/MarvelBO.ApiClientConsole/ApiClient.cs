@@ -38,7 +38,8 @@ namespace MarvelBO.ApiClientConsole
 
             var p = new OptionSet() {
                 "Usage: ",
-                "Example:  -L -c=5 -i=\">4000\" -o=-note,comics,name,-date,-id -N -C -a=8764 -b=8571 -A -d=11122 -x=\"New Note!!!\" -U -D",
+                "Example:  -L -c=5 -i=\">4000\" -o=-note,comics,name,-date,-id -N" +
+                " -C -a=8764 -b=8571 -A -d=11122 -x=\"New Note!!!\" -U -D",
                 "Options:",
                 { "h|Help",  "Show this message and exit.",
                     h => showHelp = h != null},
