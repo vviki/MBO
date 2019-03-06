@@ -20,6 +20,7 @@
 * Filtering by number and date attributes has three options: instances with attributes that are either equal to, bigger than or smaller than provided value can be selected. 
 * Although MarvelApi provides some sorting and filtering functionality, filtering and sorting by number of comics and number of series is not provided and has to be implemented by the tool itself. In order to do that entire list of creators need to be imported from MarvelApi (although it can be limited by ImportLimit configuration parameter, currently instance deployed on AWS imports only 500).
 * To cache imported list of creators Redis store is used. Creators cache has 24 hours expiration period, which is compliant with MarvelApi team's use guidelines. 
+* Readers-writers problem for accessing the creators cache is solved using ReaderWriterLockSlim class available in System.Threading standard .net library.
 * Listing notes is provided on: /api/notes
 * Manipulating notes is provided on: /api/noteOperations
 * For notes manipulation functionality: adding, updating and removing http methods: post, put and delete are used respectively.

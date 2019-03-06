@@ -115,6 +115,8 @@ namespace MarvelBO.Creators
             _readerWriterLock.EnterWriteLock();
             try
             {
+                if (!_creatorsCache.IsEmpty()) return;
+
                 _creatorsCache.Fill(_marvelClient.GetCreators());
             }
             finally
