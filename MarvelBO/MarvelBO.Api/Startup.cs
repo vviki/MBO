@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MarvelBO.Creators;
 using MarvelBO.Notes;
@@ -39,6 +40,7 @@ namespace MarvelBO.Api
 
             services.AddSingleton<IDatabase>(ConnectionMultiplexer.Connect("localhost").GetDatabase());
             services.AddSingleton<IServer>(ConnectionMultiplexer.Connect("localhost").GetServer("localhost", 6379));
+            services.AddSingleton(new ReaderWriterLockSlim());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
