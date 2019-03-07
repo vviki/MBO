@@ -122,7 +122,8 @@ namespace MarvelBO.ApiClientConsole
                     OrderBy = ParseOrder(orderBy),
                 };
                 ExecuteRequest<List<Creator>>(
-                    "api/Creators", Method.POST, request, true);
+                    "api/Creators", Method.POST, request, 
+                    responseList => responseList.Any());
             }
 
             if (listNotes)
@@ -135,7 +136,8 @@ namespace MarvelBO.ApiClientConsole
                     OrderBy = ParseOrder(orderBy),
                 };
                 ExecuteRequest<List<Note>>(
-                    "api/Notes", Method.POST, request, true);
+                    "api/Notes", Method.POST, request,
+                    responseList => responseList.Any());
             }
 
             if (compareCreators)
@@ -146,7 +148,8 @@ namespace MarvelBO.ApiClientConsole
                     SecondId = secondCreator,
                 };
                 ExecuteRequest<CreatorsComparison>(
-                    "api/CreatorsComparison", Method.POST, request, true);
+                    "api/CreatorsComparison", Method.POST, request, response => 
+                        response.ComparisonStatus == CreatorsComparisonStatus.ComparisonSuccessful);
             }
 
             if (addNote)
@@ -157,7 +160,7 @@ namespace MarvelBO.ApiClientConsole
                     Content = noteText,
                 };
                 ExecuteRequest<NoteOperationResponse>(
-                    "api/NoteOperations", Method.POST, request, false);
+                    "api/NoteOperations", Method.POST, request, response => false);
             }
 
             if (updateNote)
@@ -168,7 +171,7 @@ namespace MarvelBO.ApiClientConsole
                     Content = noteText,
                 };
                 ExecuteRequest<NoteOperationResponse>(
-                    "api/NoteOperations", Method.PUT, request, false);
+                    "api/NoteOperations", Method.PUT, request, response => false);
             }
 
             if (deleteNote)
@@ -178,12 +181,12 @@ namespace MarvelBO.ApiClientConsole
                     Id = noteId,
                 };
                 ExecuteRequest<NoteOperationResponse>(
-                    "api/NoteOperations", Method.DELETE, request, false);
+                    "api/NoteOperations", Method.DELETE, request, response => false);
             }
         }
 
         static void ExecuteRequest<TResponse>(
-            string resource, Method method, object request, bool isMarvel)
+            string resource, Method method, object request, Func<TResponse, bool> isMarvel)
             where TResponse : new()
         {
             var restRequest = new RestRequest(resource, method);
@@ -205,7 +208,7 @@ namespace MarvelBO.ApiClientConsole
                 }
                 Console.Out.WriteLine(response.Data.ToString());
             }
-            if (isMarvel)
+            if (isMarvel(response.Data))
             {
                 Console.Out.WriteLine("Data provided by Marvel. © 2014 Marvel\n");
             }
