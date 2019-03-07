@@ -12,48 +12,47 @@ namespace MarvelBO.Creators
         ICreatorsCache _creatorsCache;
         IMarvelClient _marvelClient;
         ReaderWriterLockSlim _readerWriterLock;
+        ICreatorsComparator _creatorsComparator;
 
         public CreatorsManager(ICreatorsCache creatorsCache, IMarvelClient marvelClient, 
-            ReaderWriterLockSlim readerWriterLock)
+            ReaderWriterLockSlim readerWriterLock, ICreatorsComparator creatorsComparator)
         {
             _creatorsCache = creatorsCache;
             _marvelClient = marvelClient;
             _readerWriterLock = readerWriterLock;
+            _creatorsComparator = creatorsComparator;
         }
 
-        public CreatorsComparison CompareCreators(int firstId, int secontId)
+        public CreatorsComparison CompareCreators(int firstId, int secondId)
         {
             return ExecuteOperation(
                 () =>
                 {
+                    var firstExists = _creatorsCache.Exists(firstId);
+                    var secondExists = _creatorsCache.Exists(secondId);
+
+                    if (!firstExists && !secondExists)
+                        return new CreatorsComparison()
+                        {
+                            ComparisonStatus = CreatorsComparisonStatus.BothCreatorsDoNotExist
+                        };
+
+                    if (!firstExists)
+                        return new CreatorsComparison()
+                        {
+                            ComparisonStatus = CreatorsComparisonStatus.FirstCreatorDoesNotExist
+                        };
+
+                    if (!secondExists)
+                        return new CreatorsComparison()
+                        {
+                            ComparisonStatus = CreatorsComparisonStatus.SecondCreatorDoesNotExist
+                        };
+
                     var firstToCompare = _creatorsCache.Get(firstId);
-                    var secondToCompare = _creatorsCache.Get(secontId);
+                    var secondToCompare = _creatorsCache.Get(secondId);
 
-                    var commonComicsCount = firstToCompare.Comics.Items.Count(
-                        comicOfFirst => secondToCompare.Comics.Items.Exists(
-                            comicOfSecond => comicOfSecond.ResourceURI == comicOfFirst.ResourceURI));
-
-                    var commonSeriesCount = firstToCompare.Series.Items.Count(
-                        serieOfFirst => secondToCompare.Series.Items.Exists(
-                            serieOfSecond => serieOfSecond.ResourceURI == serieOfFirst.ResourceURI));
-
-                    var first = ModelMapper.Map(firstToCompare);
-                    var second = ModelMapper.Map(secondToCompare);
-
-
-                    return new CreatorsComparison()
-                    {
-                        FullNameOfFirst = first.FullName,
-                        FullNameOfSecond = second.FullName,
-                        IdOfFirst = first.Id,
-                        IdOfSecond = second.Id,
-                        ModifiedDateOfFirst = first.ModifiedDate,
-                        ModifiedDateOfSecond = second.ModifiedDate,
-                        NoteOfFirst = first.Note,
-                        NoteOfSecond = second.Note,
-                        NumberOfCommonComics = commonComicsCount,
-                        NumberOfCommonSeries = commonSeriesCount,
-                    };
+                    return _creatorsComparator.Compare(firstToCompare, secondToCompare);
                 });
         }
 

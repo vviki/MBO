@@ -34,6 +34,7 @@ namespace MarvelBO.Api
             services.AddScoped<INotesManager, NotesManager>();
             services.AddScoped<ICreatorsManager, CreatorsManager>();
             services.AddScoped<ICreatorsCache, CreatorsCache>();
+            services.AddScoped<ICreatorsComparator, CreatorsComparator>();
             services.AddScoped<IMarvelClient, MarvelClient>();
 
             services.Configure<MarvelClientSettings>(Configuration.GetSection("MarvelClientSettings"));

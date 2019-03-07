@@ -41,6 +41,11 @@ namespace MarvelBO.Api.Controllers
         {
             var comparation = _creatorsManager.CompareCreators(firstId, secondId);
 
+            if(comparation.ComparisonStatus != CreatorsComparisonStatus.ComparisonSuccessful)
+            {
+                return comparation;
+            }
+
             Note note;
 
             if (_notesManager.TryGetNote(comparation.IdOfFirst, out note))
