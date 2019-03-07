@@ -21,28 +21,18 @@ namespace MarvelBO.Notes
 
         public IEnumerable<Note> ListNotes()
         {
-            _readerWriterLock.EnterReadLock();
-            try
-            {
-                return _notePersister.ListNotes();
-            }
-            finally
-            {
-                _readerWriterLock.ExitReadLock();
-            }
+            return ExecuteReadOperation(() => _notePersister.ListNotes());
         }
 
         public bool TryGetNote(int creatorId, out Note note)
         {
-            _readerWriterLock.EnterReadLock();
-            try
-            {
-                return _notePersister.TryGet(creatorId, out note);
-            }
-            finally
-            {
-                _readerWriterLock.ExitReadLock();
-            }
+            Note localNote = null;
+
+            var result = ExecuteReadOperation(() => _notePersister.TryGet(creatorId, out localNote));
+
+            note = localNote;
+
+            return result;
         }
 
         public NoteOperationStatus AddNote(int creatorId, string content)
@@ -92,7 +82,21 @@ namespace MarvelBO.Notes
                 });
         }
 
-        private NoteOperationStatus ExecuteWriteOperation(Func<bool> existenceCheck, 
+        private T ExecuteReadOperation<T>(Func<T> operation)
+        {
+            _readerWriterLock.EnterReadLock();
+            try
+            {
+                return operation();
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
+        }
+
+        private NoteOperationStatus ExecuteWriteOperation(
+            Func<bool> existenceCheck, 
             NoteOperationStatus existenceCheckFailedStatus,
             Func<NoteOperationStatus> operation)
         {
